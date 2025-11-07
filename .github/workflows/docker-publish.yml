@@ -47,7 +47,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Print a message
-        run: echo "IMAGE_NAME = ${{ IMAGE_NAME }}!"
+        run: echo "IMAGE_NAME = ${{ env.IMAGE_NAME }}!"
 
       # Install the cosign tool except on PR
       # https://github.com/sigstore/cosign-installer
