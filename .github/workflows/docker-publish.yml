@@ -20,10 +20,14 @@ on:
         description: 'App image to build'
         required: true
         default: 'keycloak'
+      version:
+        description: 'App version'
+        required: true
+        default: '26.4.4'
   
 env:
   # Use docker.io for Docker Hub if empty
-  # REGISTRY: docker.io
+  REGISTRY: docker.io
   # github.repository as <account>/<repo>
   IMAGE_NAME: ${{ github.repository }}-${{ inputs.app }}
 
@@ -42,6 +46,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+      - name: Print a message
+        run: echo "IMAGE_NAME = ${{ IMAGE_NAME }}!"
 
       # Install the cosign tool except on PR
       # https://github.com/sigstore/cosign-installer
