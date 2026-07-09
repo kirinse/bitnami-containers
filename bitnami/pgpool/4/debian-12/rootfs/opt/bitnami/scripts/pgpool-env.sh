@@ -24,6 +24,7 @@ export BITNAMI_DEBUG="${BITNAMI_DEBUG:-false}"
 # By setting an environment variable matching *_FILE to a file path, the prefixed environment
 # variable will be overridden with the value specified in that file
 pgpool_env_vars=(
+    PGPOOL_WORK_DIR
     PGPOOL_USER_CONF_FILE
     PGPOOL_USER_HBA_FILE
     PGPOOL_PASSWD_FILE
@@ -98,6 +99,7 @@ export PGPOOL_DEFAULT_ETC_DIR="${PGPOOL_BASE_DIR}/etc.default"
 export PGPOOL_ETC_DIR="${PGPOOL_BASE_DIR}/etc"
 export PGPOOL_LOG_DIR="${PGPOOL_BASE_DIR}/logs"
 export PGPOOL_TMP_DIR="${PGPOOL_BASE_DIR}/tmp"
+export PGPOOL_WORK_DIR="${PGPOOL_WORK_DIR:-/tmp}"
 export PGPOOL_INITSCRIPTS_DIR="/docker-entrypoint-initdb.d"
 export PGPOOL_CONF_FILE="${PGPOOL_CONF_DIR}/pgpool.conf"
 export PGPOOL_PCP_CONF_FILE="${PGPOOL_ETC_DIR}/pcp.conf"
@@ -143,7 +145,7 @@ export PGPOOL_POSTGRES_CUSTOM_USERS="${PGPOOL_POSTGRES_CUSTOM_USERS:-}"
 export PGPOOL_POSTGRES_CUSTOM_PASSWORDS="${PGPOOL_POSTGRES_CUSTOM_PASSWORDS:-}"
 export PGPOOL_ENABLE_LDAP="${PGPOOL_ENABLE_LDAP:-no}"
 export PGPOOL_AUTHENTICATION_METHOD="${PGPOOL_AUTHENTICATION_METHOD:-scram-sha-256}"
-export PGPOOL_AES_KEY="${PGPOOL_AES_KEY:-head -c 20 /dev/urandom | base64}"
+export PGPOOL_AES_KEY="${PGPOOL_AES_KEY:-$(head -c 20 /dev/urandom | base64)}"
 
 # TLS settings
 export PGPOOL_ENABLE_TLS="${PGPOOL_ENABLE_TLS:-no}"

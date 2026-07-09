@@ -139,9 +139,16 @@ nginx_validate() {
             print_validation_error "An invalid port was specified in the environment variable ${port_var}: ${err}."
         fi
     }
+    check_valid_worker_processes() {
+        local worker_processes_var="${1:?missing worker_processes variable}"
+        if [[ "${!worker_processes_var}" != "auto" ]] && ! [[ "${!worker_processes_var}" =~ ^[1-9][0-9]*$ ]]; then
+            print_validation_error "The allowed values for ${worker_processes_var} are: auto or a positive integer"
+        fi
+    }
 
     ! is_empty_value "$NGINX_ENABLE_ABSOLUTE_REDIRECT" && check_yes_no_value "NGINX_ENABLE_ABSOLUTE_REDIRECT"
     ! is_empty_value "$NGINX_ENABLE_PORT_IN_REDIRECT" && check_yes_no_value "NGINX_ENABLE_PORT_IN_REDIRECT"
+    ! is_empty_value "$NGINX_WORKER_PROCESSES" && check_valid_worker_processes "NGINX_WORKER_PROCESSES"
 
     ! is_empty_value "$NGINX_HTTP_PORT_NUMBER" && check_valid_port "NGINX_HTTP_PORT_NUMBER"
     ! is_empty_value "$NGINX_HTTPS_PORT_NUMBER" && check_valid_port "NGINX_HTTPS_PORT_NUMBER"
@@ -206,6 +213,7 @@ nginx_initialize() {
     if [[ -n "${NGINX_HTTPS_PORT_NUMBER:-}" ]] && [[ -f "${NGINX_SERVER_BLOCKS_DIR}/default-https-server-block.conf" ]]; then
         nginx_configure_port "$NGINX_HTTPS_PORT_NUMBER" "${NGINX_SERVER_BLOCKS_DIR}/default-https-server-block.conf"
     fi
+    nginx_configure "worker_processes" "$NGINX_WORKER_PROCESSES"
     nginx_configure "absolute_redirect" "$(is_boolean_yes "$NGINX_ENABLE_ABSOLUTE_REDIRECT" && echo "on" || echo "off" )"
     nginx_configure "port_in_redirect" "$(is_boolean_yes "$NGINX_ENABLE_PORT_IN_REDIRECT" && echo "on" || echo "off" )"
     # Stream configuration
@@ -580,14 +588,15 @@ nginx_update_app_configuration() {
     rename_conf_file() {
         local -r origin="$1"
         local -r destination="$2"
-        if is_file_writable "$origin" && is_file_writable "$destination"; then
-            warn "Could not rename server block file '${origin}' to '${destination}' due to lack of permissions."
-        else
-            mv "$origin" "$destination"
+        if ! is_file_writable "$origin" || ! is_file_writable "$destination"; then
+            warn "Could not rename server block file '${origin}' to '${destination}': lack of permissions."
+            return 1
         fi
+        mv "$origin" "$destination"
     }
-    is_boolean_yes "$disable_http" && [[ -e "$http_server_block" ]] && rename_conf_file "${http_server_block}${disable_suffix}" "$http_server_block"
-    is_boolean_yes "$disable_https" && [[ -e "$https_server_block" ]] && rename_conf_file "${https_server_block}${disable_suffix}" "$https_server_block"
+    local -r disable_suffix=".disabled"
+    is_boolean_yes "$disable_http" && [[ -e "$http_server_block" ]] && rename_conf_file "${http_server_block}" "${http_server_block}${disable_suffix}"
+    is_boolean_yes "$disable_https" && [[ -e "$https_server_block" ]] && rename_conf_file "$https_server_block" "${https_server_block}${disable_suffix}"
     is_boolean_yes "$enable_http" && [[ -e "${http_server_block}${disable_suffix}" ]] && rename_conf_file "${http_server_block}${disable_suffix}" "$http_server_block"
     is_boolean_yes "$enable_https" && [[ -e "${https_server_block}${disable_suffix}" ]] && rename_conf_file "${https_server_block}${disable_suffix}" "$https_server_block"
     # Update only configuration files without the '.disabled' suffix

@@ -1,7 +1,5 @@
 # Bitnami Secure Image for Parse Dashboard
 
-## What is Parse Dashboard?
-
 > Parse Dashboard is a standalone dashboard for managing your Parse apps. You can use it to manage your Parse Server apps.
 
 [Overview of Parse Dashboard](https://parseplatform.org/)
@@ -37,14 +35,6 @@ Non-root container images add an extra layer of security and are generally recom
 ## Supported tags and respective `Dockerfile` links
 
 Learn more about the Bitnami tagging policy and the difference between rolling tags and immutable tags [in our documentation page](https://techdocs.broadcom.com/us/en/vmware-tanzu/application-catalog/tanzu-application-catalog/services/tac-doc/apps-tutorials-understand-rolling-tags-containers-index.html).
-
-You can see the equivalence between the different tags by taking a look at the `tags-info.yaml` file present in the branch folder, i.e `bitnami/ASSET/BRANCH/DISTRO/tags-info.yaml`.
-
-Subscribe to project updates by watching the [bitnami/containers GitHub repo](https://github.com/bitnami/containers).
-
-## Prerequisites
-
-To run this application you need Docker Engine 1.10.0.
 
 ## How to use this image
 
@@ -162,14 +152,18 @@ Bitnami provides up-to-date versions of Parse Dashboard, including security patc
 
 ## Configuration
 
+The following section describes the supported environment variables
+
 ### Environment variables
+
+The following tables list the main variables you can set.
 
 #### Customizable environment variables
 
 | Name                                         | Description                                             | Default Value |
 |----------------------------------------------|---------------------------------------------------------|---------------|
 | `PARSE_DASHBOARD_FORCE_OVERWRITE_CONF_FILE`  | Force the config.json config file generation.           | `no`          |
-| `PARSE_DASHBOARD_ENABLE_HTTPS`               | Whether to enable HTTPS for Parse Dashboard by default. | `no`          |
+| `PARSE_DASHBOARD_ENABLE_HTTPS`               | Whether to enable HTTPS for Parse Dashboard by default. | `yes`         |
 | `PARSE_DASHBOARD_EXTERNAL_HTTP_PORT_NUMBER`  | External HTTP port for Parse Dashboard.                 | `80`          |
 | `PARSE_DASHBOARD_EXTERNAL_HTTPS_PORT_NUMBER` | External HTTPS port for Parse Dashboard.                | `443`         |
 | `PARSE_DASHBOARD_PARSE_HOST`                 | Parse host name.                                        | `parse`       |
@@ -177,11 +171,11 @@ Bitnami provides up-to-date versions of Parse Dashboard, including security patc
 | `PARSE_DASHBOARD_PARSE_PORT_NUMBER`          | Parse server port number.                               | `1337`        |
 | `PARSE_DASHBOARD_PARSE_APP_ID`               | A sample string environment variable.                   | `myappID`     |
 | `PARSE_DASHBOARD_APP_NAME`                   | Parse Dashboard App name.                               | `MyDashboard` |
-| `PARSE_DASHBOARD_PARSE_MASTER_KEY`           | Parse server master key.                                | `mymasterKey` |
+| `PARSE_DASHBOARD_PARSE_MASTER_KEY`           | Parse server master key.                                | `nil`         |
 | `PARSE_DASHBOARD_PARSE_MOUNT_PATH`           | Parse Dashboard mount path.                             | `/parse`      |
 | `PARSE_DASHBOARD_PARSE_PROTOCOL`             | Parse server protocol.                                  | `http`        |
 | `PARSE_DASHBOARD_USERNAME`                   | Parse Dashboard user name.                              | `user`        |
-| `PARSE_DASHBOARD_PASSWORD`                   | Parse Dashboard user password.                          | `bitnami`     |
+| `PARSE_DASHBOARD_PASSWORD`                   | Parse Dashboard user password.                          | `nil`         |
 
 #### Read-only environment variables
 
@@ -234,17 +228,9 @@ The Bitnami Parse Dashboard Docker image from the [Bitnami Secure Images](https:
 
 - The Parse Dashboard container has been migrated to a non-root user approach. Previously the container ran as the `root` user and the Parse Dashboard daemon was started as the `parsedashboard` user. From now on, both the container and the Parse Dashboard daemon run as user `1001`. As a consequence, the data directory must be writable by that user. You can revert this behavior by changing `USER 1001` to `USER root` in the Dockerfile.
 
-## Contributing
-
-We'd love for you to contribute to this container. You can request new features by creating an [issue](https://github.com/bitnami/containers/issues) or submitting a [pull request](https://github.com/bitnami/containers/pulls) with your contribution.
-
-## Issues
-
-If you encountered a problem running this container, you can file an [issue](https://github.com/bitnami/containers/issues/new/choose). For us to provide better support, be sure to fill the issue template.
-
 ## License
 
-Copyright &copy; 2025 Broadcom. The term "Broadcom" refers to Broadcom Inc. and/or its subsidiaries.
+Copyright &copy; 2026 Broadcom. The term "Broadcom" refers to Broadcom Inc. and/or its subsidiaries.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
